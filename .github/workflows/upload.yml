@@ -1,23 +1,25 @@
 name: Upload Executable to Google Drive
 
 on:
-  workflow_dispatch:
-  pull_request:
+  push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   upload:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Install gdrive
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/prasmussen/gdrive/releases/download/2.1.0/gdrive-windows-x64.exe" -OutFile "gdrive.exe"
-          Move-Item "gdrive.exe" "C:\Windows\System32\gdrive.exe"
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
-      - name: Upload executable to Google Drive
-        run: gdrive files upload --parent 1xOg_0Q2gEBWdn-VZGDK9DSpQxeAyORTB output\my_executable.exe
+    - name: Set up Google Drive credentials
+      run: |
+        echo "${{ secrets.GDRIVE_CREDENTIALS_JSON }}" > credentials.json
+
+    - name: Upload to Google Drive
+      run: python upload_to_gdrive.py
