@@ -19,8 +19,8 @@ jobs:
 
     - name: Decode and set up Google Drive credentials
       run: |
-        echo ${{ secrets.GDRIVE_CREDENTIALS_BASE64 }} | base64 --decode > credentials.json
-        cat credentials.json
+        $base64String = "${{ secrets.GDRIVE_CREDENTIALS_BASE64 }}"
+        [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64String)) | Out-File -FilePath credentials.json -Encoding utf8
 
     - name: Upload to Google Drive
       run: python upload_to_gdrive.py
