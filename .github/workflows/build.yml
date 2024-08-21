@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # Ensure this is set to Windows
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Create output directory
+      - name: Create output directory if not exists
         run: |
           if (-not (Test-Path -Path "output")) {
             New-Item -ItemType Directory -Path "output"
@@ -30,4 +30,13 @@ jobs:
       - name: Build executable
         run: |
           pyinstaller --onefile my_script.py
-          mv dist\my_script.exe output\my_executable.exe
+
+      - name: Remove existing executable if it exists
+        run: |
+          if (Test-Path "output\my_executable.exe") {
+            Remove-Item "output\my_executable.exe"
+          }
+
+      - name: Move new executable to output
+        run: |
+          Move-Item "dist\my_script.exe" "output\my_executable.exe"
