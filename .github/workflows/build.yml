@@ -1,28 +1,28 @@
-name: Build EXE on Pull Request
+name: Build Executable
 
 on:
-  pull_request:
+  push:
     branches:
       - main
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-latest  # Ensure this is set to Windows
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: Checkout code
+        uses: actions/checkout@v2
         
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-      
-    - name: Build executable
-      run: |
-        mkdir -p output
-        pyinstaller --onefile my_script.py
-        mv dist\my_script.exe output\my_executable.exe
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+         
+      - name: Build executable
+        run: |
+          mkdir -p output
+          pyinstaller --onefile my_script.py
+          mv dist/my_script.exe output/my_executable.exe
