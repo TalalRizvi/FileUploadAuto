@@ -21,6 +21,9 @@ jobs:
       run: |
         $base64String = "${{ secrets.GDRIVE_CREDENTIALS_BASE64 }}"
         [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64String)) | Out-File -FilePath credentials.json -Encoding utf8
+        Write-Host "==== BEGIN credentials.json ===="
+        Get-Content credentials.json
+        Write-Host "==== END credentials.json ===="
 
     - name: Upload to Google Drive
       run: python upload_to_gdrive.py
