@@ -1,19 +1,23 @@
-name: Upload Executable
+name: Upload Executable to Google Drive
 
 on:
-  workflow_run:
-    workflows: ["Build Executable"]
-    types:
-      - completed
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   upload:
-    runs-on: windows-latest  # Ensure this is set to Windows
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Upload EXE to Google Drive
+
+      - name: Install gdrive
         run: |
-          gdrive files upload --parent 1xOg_0Q2gEBWdn-VZGDK9DSpQxeAyORTB output/my_executable.exe
+          Invoke-WebRequest -Uri "https://github.com/prasmussen/gdrive/releases/download/2.1.0/gdrive-windows-x64.exe" -OutFile "gdrive.exe"
+          Move-Item "gdrive.exe" "C:\Windows\System32\gdrive.exe"
+
+      - name: Upload executable to Google Drive
+        run: gdrive files upload --parent 1xOg_0Q2gEBWdn-VZGDK9DSpQxeAyORTB output\my_executable.exe
