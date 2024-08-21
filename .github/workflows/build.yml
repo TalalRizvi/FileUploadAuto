@@ -1,0 +1,33 @@
+name: Build EXE on Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Build executable
+        run: |
+          mkdir -p output
+          pyinstaller --onefile my_script.py
+          mv dist/my_script.exe output/my_executable.exe
+
+      - name: Upload EXE to Google Drive
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.upload == 'true'
+        run: |
+          gdrive files upload --parent 1xOg_0Q2gEBWdn-VZGDK9DSpQxeAyORTB output/my_executable.exe

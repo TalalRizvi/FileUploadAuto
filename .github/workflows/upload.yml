@@ -1,0 +1,28 @@
+name: Upload EXE to Google Drive with Approval
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Approve to upload the EXE file'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+        
+      - name: Upload EXE to Google Drive
+        if: github.event.inputs.upload == 'true'
+        run: |
+          gdrive files upload --parent 1xOg_0Q2gEBWdn-VZGDK9DSpQxeAyORTB output/my_executable.exe
