@@ -20,9 +20,14 @@ jobs:
           
       - name: Install dependencies
         run: pip install -r requirements.txt
-         
+
+      - name: Create output directory
+        run: |
+          if (-not (Test-Path -Path "output")) {
+            New-Item -ItemType Directory -Path "output"
+          }
+
       - name: Build executable
         run: |
-          mkdir -p output
           pyinstaller --onefile my_script.py
-          mv dist/my_script.exe output/my_executable.exe
+          mv dist\my_script.exe output\my_executable.exe
